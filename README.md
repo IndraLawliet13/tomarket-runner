@@ -15,8 +15,8 @@ Single-account Tomarket automation runner with:
 
 ## Why this repo exists
 
-This repo is a public-safe extraction of a real Tomarket automation/hardening effort.
-It keeps the useful parts of the implementation and the architecture, while excluding live launch params, private sessions, and sensitive artifacts.
+This repo is a public-safe extraction of a real Tomarket automation and hardening effort.
+It keeps the useful parts of the implementation and architecture, while excluding live launch params, private sessions, and sensitive artifacts.
 
 ## Current status
 
@@ -43,36 +43,38 @@ What that means:
 
 ## Use cases
 
-- Reverse engineering a Telegram Mini App automation flow
-- Running a single-account Tomarket claim loop with safety controls
-- Studying how to combine HTTP-only lanes with browser-assisted SDK lanes
-- Building a scheduler-driven reward runner with logs, parking, and safe-mode
-- Using sanitized public code as a reference before adapting it to a private environment
+- reverse engineering a Telegram Mini App automation flow
+- running a single-account Tomarket claim loop with safety controls
+- studying how to combine HTTP-only lanes with browser-assisted SDK lanes
+- building a scheduler-driven reward runner with logs, parking, and safe-mode
+- using sanitized public code as a reference before adapting it to a private environment
 
 ## Architecture overview
 
-```mermaid
-flowchart TD
-    A[Bootstrap launch artifact] --> B[Login to Tomarket API]
-    B --> C[Read live state: balance tasks farming spin]
-    C --> D[Scheduler picks next due lane]
-    D --> E{Lane type}
-    E -->|HTTP-only| F[Daily / Farming / Spin / Drop / OpenAD]
-    E -->|Browser+SDK| G[AdsGram image / video]
-    F --> H[Update runner state]
-    G --> I[Start task -> SDK show -> check -> claim]
-    I --> H
-    H --> J[Write decision log / error log / state summary]
-    J --> K[Compute next_due_ts and sleep]
-```
+![Architecture overview](docs/images/architecture-overview.svg)
+
+Detailed flow diagrams live in [`docs/FLOWS.md`](docs/FLOWS.md).
+
+## Feature matrix
+
+| Area | Lane / Module | Execution model | Current status |
+|---|---|---|---|
+| Core rewards | Daily claim | HTTP-only | Proven |
+| Core rewards | Farming claim/start | HTTP-only | Proven |
+| Core rewards | Free spin | HTTP-only | Proven |
+| Core rewards | Drop mini-game | HTTP-only | Proven |
+| Ad tasks | OpenAD 9001 | HTTP-only | Proven |
+| Ad tasks | AdsGram image 8003 | Browser + SDK | Proven |
+| Ad tasks | AdsGram video 8002 | Browser + SDK | Proven |
+| Safety | Scheduler / next_due_ts | Internal runner logic | Implemented |
+| Safety | Lane parking / safe mode | Internal runner logic | Implemented |
+| Maturity | Longer unattended soak | Runtime validation | In progress |
 
 ## Demo preview
 
 ![Demo preview](docs/images/demo-preview.gif)
 
 ## Flow diagrams
-
-Detailed flows live in [`docs/FLOWS.md`](docs/FLOWS.md).
 
 ### Runner scheduling overview
 
@@ -128,6 +130,7 @@ sequenceDiagram
 - `tomarket_readonly_probe.py` — safe read-only probe
 - `bootstrap.example.json` — example launch artifact shape
 - `docs/FLOWS.md` — deeper flow diagrams and state-machine notes
+- `docs/DEPLOYMENT.md` — deployment and operational guidance
 
 ## Features
 
@@ -172,6 +175,14 @@ python3 tomarket_readonly_probe.py --bootstrap-path state/bootstrap/launch.json
 python3 tomarket_runner.py   --bootstrap-path state/bootstrap/launch.json   --loop   --max-iterations 200   --openad-daily-success-cap 2   --adsgram-daily-success-cap 1   --dropgame-play-pass-reserve 4
 ```
 
+## Deployment guide
+
+See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for:
+- local test setup
+- longer unattended execution considerations
+- browser requirements for AdsGram lanes
+- safety notes before moving from candidate to true production-ready use
+
 ## Output
 
 Runner state is written under `state/runner/`:
@@ -180,6 +191,20 @@ Runner state is written under `state/runner/`:
 - `decision-log.jsonl`
 - `error-log.jsonl`
 - `state-summary.json`
+
+## FAQ / caveats
+
+**Is this fully production-ready right now?**
+Not yet. It is best described as a strong production-ready candidate pending longer unattended soak validation.
+
+**Why are AdsGram lanes different from OpenAD?**
+OpenAD can be completed through HTTP-only task flow. AdsGram requires the real browser/SDK execution path, not just REST polling.
+
+**Does this repo include live launch params or sessions?**
+No. You must bring your own bootstrap artifact and runtime environment.
+
+**Can I use this as-is on any account?**
+No guarantee. Treat it as a strong reference implementation and adapt carefully to your own environment and risk tolerance.
 
 ## Public roadmap
 
