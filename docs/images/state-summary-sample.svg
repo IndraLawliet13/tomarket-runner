@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="314" viewBox="0 0 1100 314">
+<rect width="100%" height="100%" fill="#0d1117"/>
+<rect x="24" y="24" width="1052" height="42" rx="10" fill="#161b22" stroke="#30363d"/>
+<text x="44" y="52" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" fill="#f0f6fc">State Summary Sample</text>
+<rect x="24" y="82" width="1052" height="208" rx="10" fill="#0d1117" stroke="#30363d"/>
+<text x="44" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">{</text>
+<text x="44" y="138" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">  "safe_mode": null,</text>
+<text x="44" y="166" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">  "home_farming": {"last_decision": "watch_only_active_farming", "next_due_reason": "farming_state_active_farming"},</text>
+<text x="44" y="194" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">  "open_ad_9001": {"last_decision": "claim_ok", "next_due_reason": "openad_daily_cap_reached"},</text>
+<text x="44" y="222" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">  "adsgram_image_8003": {"last_decision": "claim_ok", "next_due_reason": "adsgram_image_8003_daily_cap_reached"},</text>
+<text x="44" y="250" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">  "adsgram_video_8002": {"last_decision": "claim_ok", "next_due_reason": "adsgram_video_8002_daily_cap_reached"},</text>
+<text x="44" y="278" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">  "drop_game": {"last_decision": "claim_ok", "next_due_reason": "drop_game_claim_ok"}</text>
+<text x="44" y="306" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#c9d1d9">}</text>
+</svg>
