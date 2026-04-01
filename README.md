@@ -15,8 +15,18 @@ Single-account Tomarket automation runner with:
 
 ## Why this repo exists
 
-This repo is a public-safe extraction of the Tomarket runner work.
-It preserves the architecture, scheduling, lane logic, and browser-assisted AdsGram path, while excluding live launch params, private sessions, and sensitive artifacts.
+This repo is a public-safe extraction of a real Tomarket automation/hardening effort.
+It keeps the useful parts of the implementation and the architecture, while excluding live launch params, private sessions, and sensitive artifacts.
+
+## Current status
+
+**Current maturity:** production-ready candidate
+
+What that means:
+- core earning lanes are implemented
+- HTTP-only and browser/SDK-assisted lanes are both covered
+- scheduler, backoff, parking, and safe-mode exist
+- still needs longer unattended soak validation before claiming final 100% production-ready status
 
 ## What it automates
 
@@ -31,9 +41,38 @@ It preserves the architecture, scheduling, lane logic, and browser-assisted AdsG
 - AdsGram image `8003`
 - AdsGram video `8002`
 
+## Use cases
+
+- Reverse engineering a Telegram Mini App automation flow
+- Running a single-account Tomarket claim loop with safety controls
+- Studying how to combine HTTP-only lanes with browser-assisted SDK lanes
+- Building a scheduler-driven reward runner with logs, parking, and safe-mode
+- Using sanitized public code as a reference before adapting it to a private environment
+
+## Architecture overview
+
+```mermaid
+flowchart TD
+    A[Bootstrap launch artifact] --> B[Login to Tomarket API]
+    B --> C[Read live state: balance tasks farming spin]
+    C --> D[Scheduler picks next due lane]
+    D --> E{Lane type}
+    E -->|HTTP-only| F[Daily / Farming / Spin / Drop / OpenAD]
+    E -->|Browser+SDK| G[AdsGram image / video]
+    F --> H[Update runner state]
+    G --> I[Start task -> SDK show -> check -> claim]
+    I --> H
+    H --> J[Write decision log / error log / state summary]
+    J --> K[Compute next_due_ts and sleep]
+```
+
+## Demo preview
+
+![Demo preview](docs/images/demo-preview.gif)
+
 ## Flow diagrams
 
-Detailed diagrams live in [`docs/FLOWS.md`](docs/FLOWS.md).
+Detailed flows live in [`docs/FLOWS.md`](docs/FLOWS.md).
 
 ### Runner scheduling overview
 
@@ -73,7 +112,7 @@ sequenceDiagram
     T-->>R: status=0 / ok
 ```
 
-## Sanitized screenshots
+## Screenshots / samples
 
 ### State summary sample
 
@@ -141,6 +180,14 @@ Runner state is written under `state/runner/`:
 - `decision-log.jsonl`
 - `error-log.jsonl`
 - `state-summary.json`
+
+## Public roadmap
+
+- [ ] finish longer unattended soak validation
+- [ ] tighten reward-sink visibility for `9001 open_ad`
+- [ ] close star settlement/readback mapping
+- [ ] document safer deployment patterns for long-lived runner execution
+- [ ] prepare a cleaner multi-account design only after single-account stability is fully proven
 
 ## Notes
 
